@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "radio-pass-back"
+version = "0.1.0"
+description = ""
+authors = ["narno3 <nathan.arnould@edu.esiee.fr>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.0"
+uvicorn = "^0.31.0"
+skyfield = "^1.49"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
