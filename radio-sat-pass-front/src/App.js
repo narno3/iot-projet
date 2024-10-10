@@ -4,6 +4,8 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './App.css';
 
+import { Trajectory } from './Trajectory';
+
 // Fix for default marker icon issue in React-Leaflet
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -30,6 +32,7 @@ const UpdateView = ({ center, zoom }) => {
 
   return null; // No need to render anything, just updating the view
 };
+
 
 function App() {
   // State to manage the map's center and the visibility of input fields
@@ -91,6 +94,7 @@ function App() {
           <Popup>Current position: {userPosition.latitude}, {userPosition.longitude}</Popup>
         </Marker>
         <Circle center={[userPosition.latitude, userPosition.longitude]} pathOptions={fillBlueOptions} radius={4600} />
+        <Trajectory/>
       </MapContainer>
     </div>
   );

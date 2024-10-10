@@ -1,9 +1,8 @@
 import csv
 from datetime import datetime, timedelta
-from logging import getLogger
 from pathlib import Path
 
-from skyfield.api import EarthSatellite, Time, Timescale, load, wgs84
+from skyfield.api import EarthSatellite, Timescale, load, wgs84
 
 from radio_pass_back.models import SatelliteTrajectory
 
@@ -24,9 +23,10 @@ TS = load.timescale()
 SATELLITES = load_amateur_satellites_data(TS)
 
 
-def find_trajectory(t1: datetime, t2: datetime, satellite) -> SatelliteTrajectory:
-    """returns a trajectory for 1 satellite, from t1 to t2"""
-    n_points = 10
+def find_trajectory(
+    t1: datetime, t2: datetime, satellite, n_points: int = 10
+) -> SatelliteTrajectory:
+    """Gets trajectory data for 'satellite' from t1 to t2."""
     t_start, t_end = TS.utc(t1), TS.utc(t2)
     delta = (t2 - t1) / n_points
     points = []
