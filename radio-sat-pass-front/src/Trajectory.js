@@ -20,7 +20,7 @@ export function Trajectory() {
     const lines = [];
     let prevPoint = myPoints[0];
     let line = [];
-    for (let i = 1; i < myPoints.length; i++) {
+    for (let i = 0; i < myPoints.length; i++) {
         if (Math.abs(prevPoint[2] - myPoints[i][2]) > 100) {
             lines.push(line);
             line = [];

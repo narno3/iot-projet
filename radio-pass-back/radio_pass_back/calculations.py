@@ -1,6 +1,7 @@
 import csv
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from time import sleep
 
 from skyfield.api import EarthSatellite, Timescale, load, wgs84
 
@@ -23,21 +24,26 @@ TS = load.timescale()
 SATELLITES = load_amateur_satellites_data(TS)
 
 
+def get_sat_position(satellite: EarthSatellite, t: datetime) -> tuple:
+    """Returns the satellite's lat and long at time t"""
+    # find geocentric position
+    geocentric = satellite.at(TS.utc(t))
+    # convert to latitude + longitude
+    lat, lon = wgs84.latlon_of(geocentric)
+    return lat.degrees, lon.degrees
+
+
 def find_trajectory(
-    t1: datetime, t2: datetime, satellite, n_points: int = 10
+    t_start: datetime, t_end: datetime, satellite: EarthSatellite, n_points: int = 10
 ) -> SatelliteTrajectory:
     """Gets trajectory data for 'satellite' from t1 to t2."""
-    t_start, t_end = TS.utc(t1), TS.utc(t2)
-    delta = (t2 - t1) / n_points
+    delta = (t_end - t_start) / n_points
     points = []
 
     for i in range(n_points):
-        # find geocentric position
         t = t_start + i * delta
-        geocentric = satellite.at(t)
-        # convert to latitude + longitude
-        lat, lon = wgs84.latlon_of(geocentric)
-        points.append([t.utc_datetime().timestamp(), lat.degrees, lon.degrees])
+        lat, lon = get_sat_position(satellite, t)
+        points.append([t.timestamp(), lat, lon])
     return SatelliteTrajectory(points=points, name=satellite.name)
 
 
@@ -59,3 +65,13 @@ def get_passes(
         elif event == 2:
             ...
     return passes
+
+
+def update_all_sat_positions(positions: list):
+    """Indefinitely update satellite's positions."""
+    while True:
+        now = datetime.now(tz=UTC)
+        for i, sat in enumerate(SATELLITES):
+            lat, lon = get_sat_position(sat, now)
+            positions[i] = [lat, lon]
+        sleep(0.5)

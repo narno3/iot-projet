@@ -10,6 +10,7 @@ import { Trajectory } from './Trajectory';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import { SatPos } from './SatPos';
 
 let DefaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -95,6 +96,7 @@ function App() {
         </Marker>
         <Circle center={[userPosition.latitude, userPosition.longitude]} pathOptions={fillBlueOptions} radius={4600} />
         <Trajectory/>
+        <SatPos/>
       </MapContainer>
     </div>
   );
