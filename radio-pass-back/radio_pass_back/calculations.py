@@ -1,7 +1,7 @@
 import csv
+import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from time import sleep
 
 from skyfield.api import EarthSatellite, Timescale, load, wgs84
 
@@ -74,4 +74,4 @@ def update_all_sat_positions(positions: list):
         for i, sat in enumerate(SATELLITES):
             lat, lon = get_sat_position(sat, now)
             positions[i] = [lat, lon]
-        sleep(0.5)
+        time.sleep(0.25)

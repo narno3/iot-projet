@@ -14,7 +14,7 @@ export const SatPos = () => {
     
     const ws = useRef(null);
     useEffect(() => {
-        ws.current = new WebSocket("ws://localhost:8000/ws");
+        ws.current = new WebSocket("ws://localhost:8000/positions");
         ws.current.onopen = () => console.log("ws opened");
         ws.current.onclose = () => console.log("ws closed");
         ws.current.onmessage = (event) => {

@@ -13,7 +13,7 @@ from radio_pass_back.calculations import (
 )
 from radio_pass_back.models import SatelliteTrajectory
 
-satellite_positions = [[0, 0] for _ in SATELLITES]
+SATELLITE_POSITIONS = [[0, 0] for _ in SATELLITES]
 
 
 @asynccontextmanager
@@ -21,7 +21,7 @@ async def app_lifespan(app: FastAPI):
     """Executed before and after the FASTAPI app is ran."""
     # Thread that periodically updates all satellite positions.
     update_positions_thread = threading.Thread(
-        target=update_all_sat_positions, daemon=True, args=(satellite_positions,)
+        target=update_all_sat_positions, daemon=True, args=(SATELLITE_POSITIONS,)
     )
     update_positions_thread.start()
     yield
@@ -42,23 +42,21 @@ app.add_middleware(
 
 @app.get("/get_trajectory")
 async def test() -> SatelliteTrajectory:
+    """Endpoint to return the trajectory for 1 satellite."""
     t1 = datetime.now(tz=UTC)
     t2 = t1 + timedelta(hours=2)
     test_trajectory = find_trajectory(t1, t2, SATELLITES[0], 1200)
     return test_trajectory
 
 
-@app.websocket("/ws")
+@app.websocket("/positions")
 async def get_all_sat_pos(ws: WebSocket):
-    # await websocket.accept()
-    # while True:
-    #     await websocket.send_text(json.dumps(satellite_positions))
-    #     await asyncio.sleep(1)
+    """Continuously returns all satellite positions."""
     await ws.accept()
     while True:
         # data = await websocket.receive_text()
         try:
-            await ws.send_json(satellite_positions)
+            await ws.send_json(SATELLITE_POSITIONS)
         except Exception as e:
             print(e)
             return
