@@ -10,7 +10,7 @@ import { Trajectory } from './Trajectory';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import { SatPos } from './SatPos';
+import { Satellites } from './Satellites';
 
 let DefaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -40,8 +40,8 @@ function App() {
   const [map, setMap] = useState(null);
   const mapRef = useRef(null);
   const [userPosition, setUserPos] = useState({
-    longitude: 51.505,
-    latitude: 0.09
+    longitude: 2.35,
+    latitude: 48.85
   }); // Default center
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Leaflet Map in React</h1>
+      <h1>Amateur Radio Satellite Tracker</h1>
 
       {/* Button to toggle input fields */}
       <form onSubmit={handleSubmit}>
@@ -85,8 +85,8 @@ function App() {
       </form>
 
       {/* Leaflet Map */}
-      <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: '500px', width: '100%', marginTop: '20px' }} >
-      <UpdateView center={[userPosition.latitude, userPosition.longitude]} zoom={10} />
+      <MapContainer center={[51.505, -0.09]} zoom={5} style={{ height: '500px', width: '100%', marginTop: '20px' }}  >
+      <UpdateView center={[userPosition.latitude, userPosition.longitude]} zoom={5} />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"
@@ -95,8 +95,7 @@ function App() {
           <Popup>Current position: {userPosition.latitude}, {userPosition.longitude}</Popup>
         </Marker>
         <Circle center={[userPosition.latitude, userPosition.longitude]} pathOptions={fillBlueOptions} radius={4600} />
-        <Trajectory/>
-        <SatPos/>
+        <Satellites/>
       </MapContainer>
     </div>
   );

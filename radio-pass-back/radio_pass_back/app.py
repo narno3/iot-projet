@@ -41,11 +41,11 @@ app.add_middleware(
 
 
 @app.get("/get_trajectory")
-async def test() -> SatelliteTrajectory:
+async def get_sat_traj(sat: int) -> SatelliteTrajectory:
     """Endpoint to return the trajectory for 1 satellite."""
     t1 = datetime.now(tz=UTC)
-    t2 = t1 + timedelta(hours=2)
-    test_trajectory = find_trajectory(t1, t2, SATELLITES[0], 1200)
+    t2 = t1 + timedelta(hours=3)
+    test_trajectory = find_trajectory(t1, t2, SATELLITES[sat], 1000)
     return test_trajectory
 
 
