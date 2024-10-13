@@ -34,7 +34,7 @@ const UpdateView = ({ center, zoom }) => {
     return null; // No need to render anything, just updating the view
 };
 
-export default function MapComponent( {setmap, userPosition} ) {
+export default function MapComponent( {setmap, userPosition, satInfos, setSelected} ) {
     const fillBlueOptions = { fillColor: 'blue' }
 
     return (
@@ -47,7 +47,7 @@ export default function MapComponent( {setmap, userPosition} ) {
                     <Popup>Current position: {userPosition.latitude}, {userPosition.longitude}</Popup>
                 </Marker>
                 <Circle center={[userPosition.latitude, userPosition.longitude]} pathOptions={fillBlueOptions} radius={4600} />
-                <Satellites/>
+                <Satellites satInfos={satInfos} setSelected={setSelected} />
             </MapContainer>
         </main>
     )

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Marker } from "react-leaflet";
+import { Marker, Popup } from "react-leaflet";
 import L from 'leaflet';
 import { Trajectory } from './Trajectory';
 
@@ -8,18 +8,21 @@ var saticon = L.icon({
     iconSize: [30, 30]
 })
 
-export const Satellite = ( {position, onClick, idx} ) => {
-    const marker = <Marker position={position} icon={saticon} eventHandlers={{click: () => onClick(idx)}} />;
+export const Satellite = ( {position, onClick, idx, info} ) => {
+    const marker = <Marker position={position} icon={saticon} eventHandlers={{click: () => onClick(idx)}} >
+        {info && <Popup offset={[0, -10]}>{info[0]}</Popup>}
+    </Marker>;
     return marker;
 }
 
-export const Satellites = () => {
+export const Satellites = ( {satInfos, setSelected} ) => {
     const [satPositions, setPositions] = useState([[0, 0]]);
     const [trajPoints, setTrajPoints] = useState([[0, 0, 0]]);
     const ws = useRef(null);
 
     // function that updates "trajPoints" with the trajectory for 'sat'
     function updateSatTraj(sat){
+        setSelected(sat);
         fetch("http://127.0.0.1:8000/get_trajectory?sat=" + sat)
         .then((res) => {
             return res.json();
@@ -48,7 +51,7 @@ export const Satellites = () => {
     }
     useEffect(() => { get_positions_ws() }, []);
 
-    const sats = satPositions.map((pos, index) => <Satellite position={pos} key={index} onClick={updateSatTraj} idx={index} />);
+    const sats = satPositions.map((pos, index) => <Satellite position={pos} key={index} info={satInfos[index+1]} onClick={updateSatTraj} idx={index} />);
     return (
         <>
             <Trajectory points={trajPoints}/>

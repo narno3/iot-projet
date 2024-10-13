@@ -1,6 +1,6 @@
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
 .App-logo {
   height: 40vmin;
@@ -84,7 +84,7 @@ aside, main {
 .card {
   background-color: rgb(239, 239, 239);
   border: 2px solid #ccc;
-  padding: 5px;
+  padding: 10px;
   padding-bottom: 20px;
   flex-grow: 1;
   /* margin: 5px; */
@@ -131,6 +131,21 @@ ul {
 
 h2 {
   padding-left: 10%;
+}
+
+.sat-infos {
+  padding: 10px;
+  overflow-y: scroll;
+  height:250px;
+  border: 2px solid #ccc;
+  font-size: smaller;
+}
+.sat-data-line {
+  margin: 15px;
+}
+.sat-infos p {
+  padding: 0;
+  margin: 5px;
 }
 
 /* my css */
