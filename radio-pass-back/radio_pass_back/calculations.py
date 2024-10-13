@@ -25,12 +25,12 @@ def load_amateur_satellites_info(satellites) -> list:
     sat_indices = {sat.name: i for i, sat in enumerate(satellites)}
     sat_info_dict = {}
     with csv_path.open() as f:
-        f.readline()
+        header = f.readline().split(',')
         while line := f.readline():
             data = line.split(",")
             index = sat_indices[data[0]]
             sat_info_dict[index] = [index] + data
-    return [sat_info_dict[i] for i in range(len(sat_info_dict))]
+    return [header] + [sat_info_dict[i][1:] for i in range(len(sat_info_dict))]
 
 
 # generate timescale object

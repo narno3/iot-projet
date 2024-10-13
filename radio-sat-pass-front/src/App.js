@@ -10,7 +10,8 @@ import MapComponent from './components/MapComponent';
 function App() {
   // State to manage the map's center and the visibility of input fields
   const [map, setMap] = useState(null);
-  const [satInfos, setSatInfos] = useState([]); // sat infos
+  const [satInfos, setSatInfos] = useState([[0],[0]]); // sat infos
+  const [selected, setSelected] = useState(0);
   const [userPosition, setUserPos] = useState({
     longitude: 2.35,
     latitude: 48.85
@@ -31,8 +32,8 @@ function App() {
     <body className="App">
       <Header />
       <div class="container">
-        <LeftSidebar />
-        <MapComponent setmap = {setMap} userPosition={userPosition} satInfos = {satInfos} />
+        <LeftSidebar satInfos={satInfos} selected={selected} />
+        <MapComponent setmap = {setMap} userPosition={userPosition} satInfos = {satInfos} setSelected={setSelected} />
         <RightSidebar map = {map} pos={userPosition} setPos= {setUserPos} />
       </div>
     </body>

@@ -1,6 +1,11 @@
 import React from 'react';
 
-export default function LeftSidebar() {
+function SatData ( {fieldName, fieldValue} ) {
+    return <div class="sat-data-line"><b>{fieldName}:</b> <p>{fieldValue}</p></div>
+}
+
+export default function LeftSidebar( {satInfos, selected} ) {
+    const infos = satInfos[selected+1].map((field, index) => <SatData fieldName={satInfos[0][index]} fieldValue={satInfos[selected+1][index]}/>)
     return (
         <aside class="left-sidebar">
         <div class="satellites card">
@@ -12,14 +17,11 @@ export default function LeftSidebar() {
                 <li>sat</li>
                 <li>sat</li>
                 <li>sat</li>
-            </ul> */}
+                </ul> */}
         </div>
         <div class="satellite-info card">
             <h2>Satellite Info</h2>
-            {/* 
-            <p>sat name</p>
-            <p>sat id</p>
-            <p>other info</p> */}
+            <div class="sat-infos">{infos}</div>
         </div>
     </aside>
     )
