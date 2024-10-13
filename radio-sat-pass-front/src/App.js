@@ -4,13 +4,16 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './App.css';
 
-import { Trajectory } from './Trajectory';
+import Header from './components/Header';
+import LeftSidebar from './components/LeftSidebar';
+import RightSidebar from './components/RightSidebar';
+import MapComponent from './components/MapComponent';
 
 // Fix for default marker icon issue in React-Leaflet
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import { Satellites } from './Satellites';
+import { Satellites } from './components/Satellites';
 
 let DefaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -24,21 +27,10 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const UpdateView = ({ center, zoom }) => {
-  const map = useMap(); // Get the map instance
-
-  useEffect(() => {
-    map.setView(center, map.getZoom()); // Dynamically update the view whenever center or zoom changes
-  }, [center, zoom, map]);
-
-  return null; // No need to render anything, just updating the view
-};
-
 
 function App() {
   // State to manage the map's center and the visibility of input fields
   const [map, setMap] = useState(null);
-  const mapRef = useRef(null);
   const [userPosition, setUserPos] = useState({
     longitude: 2.35,
     latitude: 48.85
@@ -55,49 +47,15 @@ function App() {
     });
   };
 
-  const fillBlueOptions = { fillColor: 'blue' }
-
   return (
-    <div className="App">
-      <h1>Amateur Radio Satellite Tracker</h1>
-
-      {/* Button to toggle input fields */}
-      <form onSubmit={handleSubmit}>
-        <input
-            id="longitude"
-            className="form-field"
-            type="text"
-            placeholder="Longitude"
-            name="longitude"
-            // value={userPosition.longitude}
-            // onChange={handleLongitudeChange}
-        />
-        <input
-            id="latitude"
-            className="form-field"
-            type="text"
-            placeholder="Latitude"
-            name="latitude"
-            // value={userPosition.latitude}
-            // onChange={handleLatitudeChange}
-        />
-        <button type="submit">Update Position</button>
-      </form>
-
-      {/* Leaflet Map */}
-      <MapContainer center={[51.505, -0.09]} zoom={5} style={{ height: '500px', width: '100%', marginTop: '20px' }}  >
-      <UpdateView center={[userPosition.latitude, userPosition.longitude]} zoom={5} />
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; OpenStreetMap contributors"
-        />
-        <Marker position={[userPosition.latitude, userPosition.longitude]}>
-          <Popup>Current position: {userPosition.latitude}, {userPosition.longitude}</Popup>
-        </Marker>
-        <Circle center={[userPosition.latitude, userPosition.longitude]} pathOptions={fillBlueOptions} radius={4600} />
-        <Satellites/>
-      </MapContainer>
-    </div>
+    <body className="App">
+      <Header />
+      <div class="container">
+        <LeftSidebar />
+        <MapComponent setmap = {setMap} userPosition={userPosition} />
+        <RightSidebar map = {map} pos={userPosition} setPos= {setUserPos} />
+      </div>
+    </body>
   );
 }
 
