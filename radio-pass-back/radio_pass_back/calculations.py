@@ -8,9 +8,9 @@ from skyfield.api import EarthSatellite, Timescale, load, wgs84
 from radio_pass_back.models import SatelliteTrajectory
 
 
-def load_amateur_satellites_data(ts: Timescale) -> list[EarthSatellite]:
+def load_amateur_satellites_tle(ts: Timescale) -> list[EarthSatellite]:
     """Loads amateur satellites data from csv, returns a list of EarthSatellite objects."""
-    csv_path = Path(__file__).parent / "amateur.csv"
+    csv_path = Path(__file__).parent / "amateur_tle.csv"
     with csv_path.open() as f:
         data = list(csv.DictReader(f))
     sats = [EarthSatellite.from_omm(ts, fields) for fields in data]
@@ -19,9 +19,24 @@ def load_amateur_satellites_data(ts: Timescale) -> list[EarthSatellite]:
     return sats
 
 
+def load_amateur_satellites_info(satellites) -> list:
+    """Loads additional info per sat."""
+    csv_path = Path(__file__).parent / "amateur_satcat_data.csv"
+    sat_indices = {sat.name: i for i, sat in enumerate(satellites)}
+    sat_info_dict = {}
+    with csv_path.open() as f:
+        f.readline()
+        while line := f.readline():
+            data = line.split(",")
+            index = sat_indices[data[0]]
+            sat_info_dict[index] = [index] + data
+    return [sat_info_dict[i] for i in range(len(sat_info_dict))]
+
+
 # generate timescale object
 TS = load.timescale()
-SATELLITES = load_amateur_satellites_data(TS)
+SATELLITES = load_amateur_satellites_tle(TS)
+SATELLITES_INFO = load_amateur_satellites_info(SATELLITES)
 
 
 def get_sat_position(satellite: EarthSatellite, t: datetime) -> tuple:

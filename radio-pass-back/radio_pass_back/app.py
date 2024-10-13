@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from radio_pass_back.calculations import (
     SATELLITES,
+    SATELLITES_INFO,
     find_trajectory,
     update_all_sat_positions,
 )
@@ -47,6 +48,12 @@ async def get_sat_traj(sat: int) -> SatelliteTrajectory:
     t2 = t1 + timedelta(hours=3)
     test_trajectory = find_trajectory(t1, t2, SATELLITES[sat], 1000)
     return test_trajectory
+
+
+@app.get("/sat_infos")
+async def get_sat_infos() -> list:
+    """Satellite infos."""
+    return SATELLITES_INFO
 
 
 @app.websocket("/positions")

@@ -1,0 +1,93 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+}
+
+aside, main {
+    border: 1px solid #ccc;
+}
+
+.left-sidebar, .right-sidebar {
+    width: 20%;
+}
+
+.map-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.right-sidebar, .left-sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    background-color: rgb(239, 239, 239);
+    border: 2px solid #ccc;
+    padding: 5px;
+    padding-bottom: 20px;
+    flex-grow: 1;
+    /* margin: 5px; */
+}
+
+li:hover {
+    background-color: gold;
+}
+
+ul {
+    list-style-type: none;
+    padding: 10px;
+    overflow-y: scroll;
+    height:100px;
+}
+
+.coords {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+}
+.coords input {
+    display: block;
+    width: 50%;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.location button {
+    display: block;
+    margin: auto;
+    width: 95%;
+}
+.location {
+    /* height: 150px; */
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+
+.satellites input {
+    display: block;
+    margin: auto;
+    width: 80%;
+}
+
+h2 {
+    padding-left: 10%;
+}
