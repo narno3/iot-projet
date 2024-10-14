@@ -20,12 +20,14 @@ export default function RightSidebar( {map, pos, setPos} ) {
             return;
         }
         setPos({latitude: e.target.value, longitude: pos.longitude});
+        map.setView([e.target.value, pos.longitude], map.getZoom());
     };
     const handleLongChange = (e) => {
         if(isNaN(parseFloat(e.target.value))){
             return;
         }
         setPos({longitude: e.target.value, latitude: pos.latitude});
+        map.setView([pos.latitude, e.target.value], map.getZoom());
     };
 
     return (

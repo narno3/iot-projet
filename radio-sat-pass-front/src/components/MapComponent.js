@@ -24,15 +24,6 @@ let DefaultIcon = L.icon({
   
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const UpdateView = ({ center, zoom }) => {
-    const map = useMap(); // Get the map instance
-
-    useEffect(() => {
-        map.setView(center, map.getZoom()); // Dynamically update the view whenever center or zoom changes
-    }, [center, zoom, map]);
-
-    return null; // No need to render anything, just updating the view
-};
 
 export default function MapComponent( {setmap, userPosition, satInfos, setSelected} ) {
     const fillBlueOptions = { fillColor: 'blue' }
@@ -41,7 +32,6 @@ export default function MapComponent( {setmap, userPosition, satInfos, setSelect
         <main class="map-area">
             {/* Leaflet Map */}
             <MapContainer center={[51.505, -0.09]} zoom={5} style={{ height: '100%', width: '100%'}} ref={setmap} >
-                <UpdateView center={[userPosition.latitude, userPosition.longitude]} zoom={5} />
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
                 <Marker position={[userPosition.latitude, userPosition.longitude]}>
                     <Popup>Current position: {userPosition.latitude}, {userPosition.longitude}</Popup>
