@@ -3,7 +3,7 @@ import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
-from skyfield.api import EarthSatellite, Timescale, load, wgs84
+from skyfield.api import EarthSatellite, Timescale, load, wgs84, Time
 
 from radio_pass_back.models import SatelliteTrajectory
 
@@ -25,7 +25,7 @@ def load_amateur_satellites_info(satellites) -> list:
     sat_indices = {sat.name: i for i, sat in enumerate(satellites)}
     sat_info_dict = {}
     with csv_path.open() as f:
-        header = f.readline().split(',')
+        header = f.readline().split(",")
         while line := f.readline():
             data = line.split(",")
             index = sat_indices[data[0]]
@@ -63,23 +63,45 @@ def find_trajectory(
 
 
 def get_passes(
-    user_coords: tuple, satellite: EarthSatellite
+    user_coords: tuple, satellite: EarthSatellite, t_start: Time, t_end: Time
 ) -> list[SatelliteTrajectory]:
-    """returns passes between time and (time+24h) for this satellite. WIP"""
+    """Returns passes between time and (time+24h) for this satellite."""
     # our first need is to find when satellites rise and set:
     # https://rhodesmill.org/skyfield/earth-satellites.html#finding-when-a-satellite-rises-and-sets
     user_location = wgs84.latlon(user_coords[0], user_coords[1])
-    t0, t1 = TS.now(), TS.now() + timedelta(days=1)
+    # t0, t1 = TS.now(), TS.now() + timedelta(days=1)
     passes = []
-
-    t, events = satellite.find_events(user_location, t0, t1, altitude_degrees=10.0)
+    pass_start, pass_end = None, None
+    t, events = satellite.find_events(
+        user_location, t_start, t_end, altitude_degrees=10.0
+    )
+    ti: Time
     for ti, event in zip(t, events):
         print(ti.utc_strftime("%Y %b %d %H:%M:%S"), event)
         if event == 0:
-            ...
+            pass_start = ti.utc_datetime()
         elif event == 2:
-            ...
+            pass_end = ti.utc_datetime()
+            traj = find_trajectory(pass_start, pass_end, satellite, n_points=50)
+            passes.append(traj)
     return passes
+
+
+def find_all_passes(user_coords: tuple) -> list:
+    """Returns all passes, for this location, within one day."""
+    all_passes: list = []
+    t_start, t_end = TS.now(), TS.now() + timedelta(days=1)
+    # step 1: get all of the next passes
+    for i, sat in enumerate(SATELLITES):
+        sat_passes = get_passes(user_coords, sat, t_start, t_end)
+        all_passes.append([i, p] for p in sat_passes)
+
+    # step 2: sort by time
+    def key_function(element):
+        return element[1][0][0]  # <-- the date of the first point
+
+    sat_passes.sort(key=key_function)
+    return sat_passes
 
 
 def update_all_sat_positions(positions: list):
