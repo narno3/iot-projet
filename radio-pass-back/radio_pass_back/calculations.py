@@ -58,7 +58,7 @@ def find_trajectory(
     for i in range(n_points):
         t = t_start + i * delta
         lat, lon = get_sat_position(satellite, t)
-        points.append([t.timestamp(), lat, lon])
+        points.append([t.strftime("%d/%m %H:%M"), lat, lon])
     return SatelliteTrajectory(points=points, name=satellite.name)
 
 
@@ -77,12 +77,12 @@ def get_passes(
     )
     ti: Time
     for ti, event in zip(t, events):
-        print(ti.utc_strftime("%Y %b %d %H:%M:%S"), event)
+        # print(ti.utc_strftime("%Y %b %d %H:%M:%S"), event)
         if event == 0:
             pass_start = ti.utc_datetime()
-        elif event == 2:
+        elif event == 2 and pass_start:
             pass_end = ti.utc_datetime()
-            traj = find_trajectory(pass_start, pass_end, satellite, n_points=50)
+            traj = find_trajectory(pass_start, pass_end, satellite, n_points=20)
             passes.append(traj)
     return passes
 
@@ -90,18 +90,20 @@ def get_passes(
 def find_all_passes(user_coords: tuple) -> list:
     """Returns all passes, for this location, within one day."""
     all_passes: list = []
-    t_start, t_end = TS.now(), TS.now() + timedelta(days=1)
+    # t_start, t_end = TS.now(), TS.now() + timedelta(days=1)
+    t_start = TS.utc(datetime.now(tz=UTC))
+    t_end = t_start + timedelta(hours=3)
     # step 1: get all of the next passes
     for i, sat in enumerate(SATELLITES):
-        sat_passes = get_passes(user_coords, sat, t_start, t_end)
-        all_passes.append([i, p] for p in sat_passes)
+        if sat_passes := get_passes(user_coords, sat, t_start, t_end):
+            all_passes.extend([i, p.points] for p in sat_passes)
 
     # step 2: sort by time
     def key_function(element):
         return element[1][0][0]  # <-- the date of the first point
 
-    sat_passes.sort(key=key_function)
-    return sat_passes
+    all_passes.sort(key=key_function)
+    return all_passes
 
 
 def update_all_sat_positions(positions: list):

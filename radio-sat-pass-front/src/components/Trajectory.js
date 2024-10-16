@@ -1,5 +1,4 @@
 import { Polyline, CircleMarker } from 'react-leaflet';
-import { useState, useEffect } from 'react';
 const trajColor = { color: 'red' }
 
 export function Trajectory( {points} ) {

@@ -10,6 +10,7 @@ from radio_pass_back.calculations import (
     SATELLITES,
     SATELLITES_INFO,
     find_trajectory,
+    find_all_passes,
     update_all_sat_positions,
 )
 from radio_pass_back.models import SatelliteTrajectory
@@ -54,6 +55,12 @@ async def get_sat_traj(sat: int) -> SatelliteTrajectory:
 async def get_sat_infos() -> list:
     """Satellite infos."""
     return SATELLITES_INFO
+
+
+@app.get("/passes")
+async def get_passes(lat: float, long: float) -> list:
+    """Return next passes for this position."""
+    return find_all_passes((lat, long))
 
 
 @app.websocket("/positions")
