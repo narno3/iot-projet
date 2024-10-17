@@ -1,8 +1,7 @@
 
-import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from 'react-leaflet';
-import React, { useState, useRef, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import React from 'react';
 import { Satellites } from './Satellites';
-import { Trajectory } from './Trajectory';
 
 import L from 'leaflet';
 
@@ -25,7 +24,7 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 
-export default function MapComponent( {setmap, userPosition, satInfos, setSelected} ) {
+export default function MapComponent( {setmap, userPosition, satInfos, setSelected, trajPoints, setTrajPoints, selected} ) {
     const fillBlueOptions = { fillColor: 'blue' }
 
     return (
@@ -37,7 +36,7 @@ export default function MapComponent( {setmap, userPosition, satInfos, setSelect
                     <Popup>Current position: {userPosition.latitude}, {userPosition.longitude}</Popup>
                 </Marker>
                 <Circle center={[userPosition.latitude, userPosition.longitude]} pathOptions={fillBlueOptions} radius={4600} />
-                <Satellites satInfos={satInfos} setSelected={setSelected} />
+                <Satellites satInfos={satInfos} setSelected={setSelected} trajPoints={trajPoints} setTrajPoints={setTrajPoints} selected={selected}/>
             </MapContainer>
         </main>
     )

@@ -1,6 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-export default function RightSidebar( {map, pos, setPos} ) {
+function PassComponent( {passData, setTrajPoints, setSelected} ) {
+    const handleChoosePass = (e) => {
+        setTrajPoints(passData[1]);
+        setSelected(passData[0]);
+    }
+    return <li onClick={handleChoosePass}> {passData[1][0][0]}</li>
+}
+
+export default function RightSidebar( {map, pos, setPos, setTrajPoints, setSelected} ) {
+    const [passes, setPasses] = useState([]);
     const handleLocate = () => {
         if (!map){
             return;
@@ -30,6 +39,19 @@ export default function RightSidebar( {map, pos, setPos} ) {
         map.setView([pos.latitude, e.target.value], map.getZoom());
     };
 
+    const getPasses = () => {
+        setPasses([]);
+        fetch("http://127.0.0.1:8000/passes?lat="+pos.latitude+"&long="+pos.longitude)
+        .then((res) => {
+            return res.json();
+        })
+        .then((data) => {
+            setPasses(data);
+        });
+    }
+
+    const passesList = passes.map((pass, index) => <PassComponent passData={pass} setTrajPoints={setTrajPoints} setSelected={setSelected} />)
+
     return (
         <aside class="right-sidebar">
             <div class="location card">
@@ -42,12 +64,9 @@ export default function RightSidebar( {map, pos, setPos} ) {
             </div>
             <div class="next-passes card">
                 <h2>Next Passes</h2>
+                <button onClick={() => {getPasses()}}>Find Next Passes!</button>
                 <ul>
-                    <li>pass</li>
-                    <li>pass</li>
-                    <li>pass</li>
-                    <li>pass</li>
-                    <li>pass</li>
+                    {passesList}
                 </ul>
             </div>
         </aside>

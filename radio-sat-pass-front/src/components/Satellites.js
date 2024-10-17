@@ -8,16 +8,27 @@ var saticon = L.icon({
     iconSize: [30, 30]
 })
 
-export const Satellite = ( {position, onClick, idx, info} ) => {
-    const marker = <Marker position={position} icon={saticon} eventHandlers={{click: () => onClick(idx)}} >
+export const Satellite = ( {position, onClick, idx, info, selected} ) => {
+    const markerRef = useRef(null);
+    useEffect(() => {
+        // open popup when satellite is selected
+        if (markerRef.current) {
+            const marker = markerRef.current;
+            if (selected === idx) {
+                marker.openPopup();
+            } else {
+                marker.closePopup();
+            }
+        }
+    }, [selected]);
+    const marker = <Marker position={position} icon={saticon} ref={markerRef} eventHandlers={{click: () => onClick(idx)}} >
         {info && <Popup offset={[0, -10]} keepInView={false} autoPan={false}>{info[0]}</Popup>}
     </Marker>;
     return marker;
 }
 
-export const Satellites = ( {satInfos, setSelected} ) => {
+export const Satellites = ( {satInfos, setSelected, trajPoints, setTrajPoints, selected} ) => {
     const [satPositions, setPositions] = useState([[0, 0]]);
-    const [trajPoints, setTrajPoints] = useState([[0, 0, 0]]);
     const ws = useRef(null);
 
     // function that updates "trajPoints" with the trajectory for 'sat'
@@ -51,7 +62,7 @@ export const Satellites = ( {satInfos, setSelected} ) => {
     }
     useEffect(() => { get_positions_ws() }, []);
 
-    const sats = satPositions.map((pos, index) => <Satellite position={pos} key={index} info={satInfos[index+1]} onClick={updateSatTraj} idx={index} />);
+    const sats = satPositions.map((pos, index) => <Satellite position={pos} key={index} info={satInfos[index+1]} onClick={updateSatTraj} idx={index} selected={selected} />);
     return (
         <>
             <Trajectory points={trajPoints}/>
