@@ -30,7 +30,7 @@ export default function MapComponent( {setmap, userPosition, satInfos, setSelect
     return (
         <main class="map-area">
             {/* Leaflet Map */}
-            <MapContainer center={[51.505, -0.09]} zoom={5} style={{ height: '100%', width: '100%'}} ref={setmap} >
+            <MapContainer center={[51.505, -0.09]} zoom={4} style={{ height: '100%', width: '100%'}} ref={setmap} >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
                 <Marker position={[userPosition.latitude, userPosition.longitude]}>
                     <Popup>Current position: {userPosition.latitude}, {userPosition.longitude}</Popup>
