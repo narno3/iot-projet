@@ -22,7 +22,7 @@ export const Satellite = ( {position, onClick, idx, info, selected} ) => {
         }
     }, [selected]);
     const marker = <Marker position={position} icon={saticon} ref={markerRef} eventHandlers={{click: () => onClick(idx)}} >
-        <Popup offset={[0, -10]} keepInView={false} autoPan={false}>{info[0]}</Popup>
+        {info && <Popup offset={[0, -10]} keepInView={false} autoPan={false}>{info[0]}</Popup>}
     </Marker>;
     return marker;
 }
